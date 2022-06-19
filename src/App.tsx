@@ -1,12 +1,13 @@
-import { useState } from "react";
-import "./App.css";
-import { Header } from "./components/Header";
+import styles from "./App.module.css";
 
 function App() {
   return (
-    <div className="App">
-      <h1>Home</h1>
-      <Header />
+    <div className={styles.App}>
+      <img
+        src="../images/banner.jpg"
+        alt="Home Banner"
+        className={styles.homeBanner}
+      />
     </div>
   );
 }

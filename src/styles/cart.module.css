@@ -1,0 +1,9 @@
+.articleImage {
+    width: 70px;
+    height: 70px;
+}
+
+.articleListContainer {
+    display: flex;
+    gap: 2rem
+}

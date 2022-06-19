@@ -1,0 +1,25 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    align-items: center;
+    background-color: lightsteelblue;
+    color: darkslategrey;
+    font-weight: bold;
+}
+
+.navbar-right {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.shoppingCartIcon {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+}
