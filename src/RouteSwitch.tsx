@@ -18,6 +18,14 @@ export const RouteSwitch = () => {
     const finalarticles = [...articlesInCart, articleID];
     setArticlesInCart(finalarticles);
   }
+
+  function handleDelete(articleID: string) {
+    const newArticles = articlesInCart.filter(
+      (article) => article !== articleID
+    );
+    setArticlesInCart(newArticles);
+  }
+
   return (
     <BrowserRouter>
       <Navbar />
@@ -38,7 +46,13 @@ export const RouteSwitch = () => {
         />
         <Route
           path="/cart"
-          element={<Cart articles={articles} articlesInCart={articlesInCart} />}
+          element={
+            <Cart
+              articles={articles}
+              articlesInCart={articlesInCart}
+              onDeleteArticle={handleDelete}
+            />
+          }
         />
         <Route
           path="*"
