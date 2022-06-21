@@ -1,11 +1,14 @@
 import { Article } from "../Article";
 import styles from "../styles/cart.module.css";
 import IconButton from "@mui/material/IconButton";
+import { Quantities } from "../RouteSwitch";
 
 interface Props {
   articlesInCart: Array<string>;
   articles: Array<Article>;
   onDeleteArticle: (articleID: string) => void;
+  onChangeQuantity: (quantity: number, articleID: string) => void;
+  quantities: Quantities;
 }
 
 export const Cart = (props: Props) => {
@@ -18,6 +21,8 @@ export const Cart = (props: Props) => {
           articles={props.articles}
           articleID={articleID}
           onDeleteArticle={props.onDeleteArticle}
+          onChangeQuantity={props.onChangeQuantity}
+          quantities={props.quantities}
         />
       ))}
     </div>
@@ -28,15 +33,24 @@ interface Prop2 {
   articles: Array<Article>;
   articleID: string;
   onDeleteArticle: (articleID: string) => void;
+  onChangeQuantity: (quantity: number, articleID: string) => void;
+  quantities: Quantities;
 }
 const ArticleListElement = (props: Prop2) => {
   const article = props.articles.find(
     (article) => article.id === props.articleID
   );
+  const quantity = props.quantities[props.articleID];
+  const updatedPrize = (article?.prize ?? 1) * quantity;
+  console.log(article);
+  console.log(quantity);
+  console.log(updatedPrize);
+  console.log(props.quantities);
+  console.log(props.articleID);
 
   return (
     <>
-      {article ? (
+      {article && (
         <div className={styles.articleListContainer}>
           <img
             src={article.imageURL}
@@ -44,7 +58,23 @@ const ArticleListElement = (props: Prop2) => {
             className={styles.articleImage}
           />
           <p>{article.title}</p>
-          <p>{article.prize} €</p>
+          <p>{updatedPrize} €</p>
+          <label>
+            Quantity:
+            <input
+              type="number"
+              name="quantity"
+              id="quantity"
+              min={1}
+              defaultValue={quantity ?? 1}
+              onChange={(event) => {
+                props.onChangeQuantity(
+                  parseInt(event.target.value),
+                  article.id
+                );
+              }}
+            />
+          </label>
           <IconButton
             size="small"
             onClick={() => {
@@ -54,8 +84,6 @@ const ArticleListElement = (props: Prop2) => {
             Delete
           </IconButton>
         </div>
-      ) : (
-        <></>
       )}
     </>
   );

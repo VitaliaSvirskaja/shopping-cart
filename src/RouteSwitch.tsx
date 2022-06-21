@@ -9,14 +9,20 @@ import { useState } from "react";
 import { Article } from "./Article";
 import { mockArticles } from "./product-data";
 
+export interface Quantities {
+  [articleID: string]: number;
+}
+
 export const RouteSwitch = () => {
   const [articles, setArticles] = useState<Array<Article>>(mockArticles);
-  const [articlesInCart, setArticlesInCart] = useState<Array<string>>([]);
-  console.table(articles);
+  const [articlesInCart, setArticlesInCart] = useState<Array<string>>(["A"]);
+  const [quantities, setQuantities] = useState<Quantities>({ A: 3 });
 
   function handleAddToCart(articleID: string) {
     const finalarticles = [...articlesInCart, articleID];
     setArticlesInCart(finalarticles);
+    const updatedQuantities = { ...quantities, [articleID]: 1 };
+    setQuantities(updatedQuantities);
   }
 
   function handleDelete(articleID: string) {
@@ -24,11 +30,18 @@ export const RouteSwitch = () => {
       (article) => article !== articleID
     );
     setArticlesInCart(newArticles);
+    const { [articleID]: removedQuantity, ...remainingQuantities } = quantities;
+    setQuantities(remainingQuantities);
+  }
+
+  function handleQuantityChange(quantity: number, articleID: string) {
+    const updatedQuantities = { ...quantities, [articleID]: quantity };
+    setQuantities(updatedQuantities);
   }
 
   return (
     <BrowserRouter>
-      <Navbar />
+      <Navbar quantities={quantities} />
       <Routes>
         <Route path="/" element={<App />} />
         <Route
@@ -51,6 +64,8 @@ export const RouteSwitch = () => {
               articles={articles}
               articlesInCart={articlesInCart}
               onDeleteArticle={handleDelete}
+              onChangeQuantity={handleQuantityChange}
+              quantities={quantities}
             />
           }
         />
