@@ -1,7 +1,7 @@
 import styles from "../styles/header.module.css";
 import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
-import { Quantities } from "../RouteSwitch";
+import { Quantities } from "../App";
 
 interface Prop {
   quantities: Quantities;
@@ -35,7 +35,9 @@ export const Navbar = (props: Prop) => {
               alt="shopping cart"
               className={styles.shoppingCartIcon}
             />
-            <p>{articleQuantityInCart === 0 ? "" : articleQuantityInCart}</p>
+            <p data-testid="navbarQuantity">
+              {articleQuantityInCart === 0 ? "" : articleQuantityInCart}
+            </p>
           </Link>
         </div>
       </nav>

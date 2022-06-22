@@ -1,7 +1,8 @@
 import { Article } from "../Article";
 import styles from "../styles/cart.module.css";
 import IconButton from "@mui/material/IconButton";
-import { Quantities } from "../RouteSwitch";
+import { Quantities } from "../App";
+import { useMemo } from "react";
 
 interface Props {
   articlesInCart: Array<string>;
@@ -12,6 +13,22 @@ interface Props {
 }
 
 export const Cart = (props: Props) => {
+  const finalPrize = useMemo<number>(() => {
+    const articlePrizes: Array<number> = Object.entries(props.quantities).map(
+      (entry) => {
+        const [articleID, quantity] = entry;
+        const article = props.articles.find(
+          (article) => article.id === articleID
+        );
+        return (article?.prize ?? 0) * quantity;
+      }
+    );
+    return articlePrizes.reduce(
+      (previousValue, currentValue) => previousValue + currentValue,
+      0
+    );
+  }, [props.quantities, props.articles]);
+
   return (
     <div>
       <h1>Cart</h1>
@@ -25,6 +42,9 @@ export const Cart = (props: Props) => {
           quantities={props.quantities}
         />
       ))}
+      <div className={styles.finalPrizeContainer}>
+        Final Prize: {finalPrize} €
+      </div>
     </div>
   );
 };
@@ -42,11 +62,6 @@ const ArticleListElement = (props: Prop2) => {
   );
   const quantity = props.quantities[props.articleID];
   const updatedPrize = (article?.prize ?? 1) * quantity;
-  console.log(article);
-  console.log(quantity);
-  console.log(updatedPrize);
-  console.log(props.quantities);
-  console.log(props.articleID);
 
   return (
     <>
@@ -88,5 +103,3 @@ const ArticleListElement = (props: Prop2) => {
     </>
   );
 };
-
-// TODO Quantity form ergänzen + Logik
