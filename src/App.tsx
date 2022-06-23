@@ -19,10 +19,18 @@ export const App = () => {
   const [quantities, setQuantities] = useState<Quantities>({ A: 3 });
 
   function handleAddToCart(articleID: string) {
-    const finalarticles = [...articlesInCart, articleID];
-    setArticlesInCart(finalarticles);
-    const updatedQuantities = { ...quantities, [articleID]: 1 };
-    setQuantities(updatedQuantities);
+    if (articlesInCart.includes(articleID)) {
+      const updatedQuantities = {
+        ...quantities,
+        [articleID]: quantities[articleID] + 1,
+      };
+      setQuantities(updatedQuantities);
+    } else {
+      const finalarticles = [...articlesInCart, articleID];
+      setArticlesInCart(finalarticles);
+      const updatedQuantities = { ...quantities, [articleID]: 1 };
+      setQuantities(updatedQuantities);
+    }
   }
 
   function handleDelete(articleID: string) {
