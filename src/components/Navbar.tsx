@@ -1,14 +1,12 @@
 import styles from "../styles/header.module.css";
 import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
-import { Quantities } from "../App";
+import { useContext } from "react";
+import { CartContext } from "../CartContext";
 
-interface Prop {
-  quantities: Quantities;
-}
-
-export const Navbar = (props: Prop) => {
-  const quantityInCart = Object.values(props.quantities);
+export const Navbar = () => {
+  const { quantities } = useContext(CartContext);
+  const quantityInCart = Object.values(quantities);
   const articleQuantityInCart = quantityInCart.reduce(
     (previousValue, currentValue) => previousValue + currentValue,
     0
