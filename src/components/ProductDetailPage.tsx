@@ -1,11 +1,10 @@
 import { Link, useParams } from "react-router-dom";
 import styles from "../styles/productListPage.module.css";
-import { Article } from "../Article";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
+import { ArticleContext } from "../ArticleContext";
 
 interface Props {
-  articles: Array<Article>;
   onAddToCart: (articleID: string) => void;
 }
 
@@ -13,11 +12,9 @@ export const ProductDetailPage = (props: Props) => {
   useEffect(() => {
     console.log("Mount PDP");
   }, []);
-
+  const articles = useContext(ArticleContext);
   let params = useParams();
-  const article = props.articles.find(
-    (article) => params.articleID === article.id
-  );
+  const article = articles.find((article) => params.articleID === article.id);
   console.log(params);
 
   return (

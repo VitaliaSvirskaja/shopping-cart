@@ -1,25 +1,23 @@
-import { Article } from "../Article";
 import styles from "../styles/cart.module.css";
 import IconButton from "@mui/material/IconButton";
 import { Quantities } from "../App";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
+import { ArticleContext } from "../ArticleContext";
 
 interface Props {
   articlesInCart: Array<string>;
-  articles: Array<Article>;
   onDeleteArticle: (articleID: string) => void;
   onChangeQuantity: (quantity: number, articleID: string) => void;
   quantities: Quantities;
 }
 
 export const Cart = (props: Props) => {
+  const articles = useContext(ArticleContext);
   const finalPrize = useMemo<number>(() => {
     const articlePrizes: Array<number> = Object.entries(props.quantities).map(
       (entry) => {
         const [articleID, quantity] = entry;
-        const article = props.articles.find(
-          (article) => article.id === articleID
-        );
+        const article = articles.find((article) => article.id === articleID);
         return (article?.prize ?? 0) * quantity;
       }
     );
@@ -27,7 +25,7 @@ export const Cart = (props: Props) => {
       (previousValue, currentValue) => previousValue + currentValue,
       0
     );
-  }, [props.quantities, props.articles]);
+  }, [props.quantities, articles]);
 
   return (
     <div>
@@ -35,14 +33,13 @@ export const Cart = (props: Props) => {
       {props.articlesInCart.map((articleID) => (
         <ArticleListElement
           key={articleID}
-          articles={props.articles}
           articleID={articleID}
           onDeleteArticle={props.onDeleteArticle}
           onChangeQuantity={props.onChangeQuantity}
           quantities={props.quantities}
         />
       ))}
-      <div className={styles.finalPrizeContainer}>
+      <div data-testid="finalPrize" className={styles.finalPrizeContainer}>
         Final Prize: {finalPrize} €
       </div>
     </div>
@@ -50,16 +47,14 @@ export const Cart = (props: Props) => {
 };
 
 interface Prop2 {
-  articles: Array<Article>;
   articleID: string;
   onDeleteArticle: (articleID: string) => void;
   onChangeQuantity: (quantity: number, articleID: string) => void;
   quantities: Quantities;
 }
 const ArticleListElement = (props: Prop2) => {
-  const article = props.articles.find(
-    (article) => article.id === props.articleID
-  );
+  const articles = useContext(ArticleContext);
+  const article = articles.find((article) => article.id === props.articleID);
   const quantity = props.quantities[props.articleID];
   const updatedPrize = (article?.prize ?? 1) * quantity;
 
@@ -80,6 +75,7 @@ const ArticleListElement = (props: Prop2) => {
               type="number"
               name="quantity"
               id="quantity"
+              data-testid="quantityInput"
               min={1}
               defaultValue={quantity ?? 1}
               onChange={(event) => {

@@ -1,16 +1,14 @@
-import { Article } from "../Article";
 import styles from "../styles/productListPage.module.css";
 import { Link, Outlet } from "react-router-dom";
+import { useContext } from "react";
+import { ArticleContext } from "../ArticleContext";
 
-interface Props {
-  articles: Array<Article>;
-}
-
-export const ProductListPage = (props: Props) => {
-  console.log(props.articles[0].id);
+export const ProductListPage = () => {
+  const articles = useContext(ArticleContext);
+  console.log(articles[0].id);
   return (
     <div className={styles.articlesContainer}>
-      {props.articles.map((article) => (
+      {articles.map((article) => (
         <Link to={`/sunglasses/${article.id}`} key={article.id}>
           <div className={styles.articleContainer}>
             <img

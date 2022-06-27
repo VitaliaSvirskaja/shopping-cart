@@ -5,18 +5,17 @@ import { ProductDetailPage } from "./components/ProductDetailPage";
 import { Cart } from "./components/Cart";
 import Home from "./Home";
 import { Navbar } from "./components/Navbar";
-import { useState } from "react";
-import { Article } from "./Article";
-import { mockArticles } from "./product-data";
+import { useContext, useState } from "react";
+import { ArticleContext } from "./ArticleContext";
 
 export interface Quantities {
   [articleID: string]: number;
 }
 
 export const App = () => {
-  const [articles, setArticles] = useState<Array<Article>>(mockArticles);
   const [articlesInCart, setArticlesInCart] = useState<Array<string>>(["A"]);
   const [quantities, setQuantities] = useState<Quantities>({ A: 3 });
+  const articles = useContext(ArticleContext);
 
   function handleAddToCart(articleID: string) {
     if (articlesInCart.includes(articleID)) {
@@ -26,8 +25,8 @@ export const App = () => {
       };
       setQuantities(updatedQuantities);
     } else {
-      const finalarticles = [...articlesInCart, articleID];
-      setArticlesInCart(finalarticles);
+      const finalArticles = [...articlesInCart, articleID];
+      setArticlesInCart(finalArticles);
       const updatedQuantities = { ...quantities, [articleID]: 1 };
       setQuantities(updatedQuantities);
     }
@@ -50,42 +49,35 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Navbar quantities={quantities} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route
-          path="sunglasses"
-          element={<ProductListPage articles={articles} />}
-        />
-        <Route
-          path="sunglasses/:articleID"
-          element={
-            <ProductDetailPage
-              articles={articles}
-              onAddToCart={handleAddToCart}
-            />
-          }
-        />
-        <Route
-          path="/cart"
-          element={
-            <Cart
-              articles={articles}
-              articlesInCart={articlesInCart}
-              onDeleteArticle={handleDelete}
-              onChangeQuantity={handleQuantityChange}
-              quantities={quantities}
-            />
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <main style={{ padding: "1rem" }}>
-              <p>There's nothing here!</p>
-            </main>
-          }
-        />
-      </Routes>
+      <ArticleContext.Provider value={articles}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="sunglasses" element={<ProductListPage />} />
+          <Route
+            path="sunglasses/:articleID"
+            element={<ProductDetailPage onAddToCart={handleAddToCart} />}
+          />
+          <Route
+            path="/cart"
+            element={
+              <Cart
+                articlesInCart={articlesInCart}
+                onDeleteArticle={handleDelete}
+                onChangeQuantity={handleQuantityChange}
+                quantities={quantities}
+              />
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <main style={{ padding: "1rem" }}>
+                <p>There's nothing here!</p>
+              </main>
+            }
+          />
+        </Routes>
+      </ArticleContext.Provider>
     </BrowserRouter>
   );
 };
